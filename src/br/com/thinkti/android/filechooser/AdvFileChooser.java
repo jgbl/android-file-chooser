@@ -11,15 +11,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
 
 public class AdvFileChooser extends Activity {
 	private File currentDir;
@@ -27,7 +25,6 @@ public class AdvFileChooser extends Activity {
 	private FileFilter fileFilter;
 	private File fileSelected;
 	private ArrayList<String> extensions;
-	private AdView adView;
 	private boolean selectFolder = false;
 	
 	@Override
@@ -35,13 +32,8 @@ public class AdvFileChooser extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_view);
 		
-		adView = new AdView(this, AdSize.BANNER, "a14efe304f0d91e");
-        
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.adMob);
-        linearLayout.addView(adView);
-        adView.loadAd(new AdRequest());
 		
-		Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			if (extras.getStringArrayList("filterFileExtension") != null) {
 				extensions = extras.getStringArrayList("filterFileExtension");				
@@ -63,7 +55,10 @@ public class AdvFileChooser extends Activity {
 			}
 		}
 		
-		currentDir = new File("/sdcard/");
+		String DefaultDir = extras.getString("DefaultDir");
+		if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
+		currentDir = new File(DefaultDir);
+		Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
 		fill(currentDir);		
 	}
 	
@@ -172,7 +167,7 @@ public class AdvFileChooser extends Activity {
 	
 	@Override
 	protected void onDestroy() {
-		adView.destroy();
+		
 		super.onDestroy();
 	}
 }

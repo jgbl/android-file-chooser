@@ -10,9 +10,11 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class FileChooser extends ListActivity {
 	private File currentDir;
@@ -24,21 +26,31 @@ public class FileChooser extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			if (extras.getStringArrayList("filterFileExtension") != null) {
-				extensions = extras.getStringArrayList("filterFileExtension");				
-				fileFilter = new FileFilter() {
-					@Override
-					public boolean accept(File pathname) {						
-						return ((pathname.isDirectory()) || (pathname.getName().contains(".")?extensions.contains(pathname.getName().substring(pathname.getName().lastIndexOf("."))):false));
-					}
-				};
+		try
+		{
+			Bundle extras = getIntent().getExtras();
+			if (extras != null) {
+				if (extras.getStringArrayList("filterFileExtension") != null) {
+					extensions = extras.getStringArrayList("filterFileExtension");				
+					fileFilter = new FileFilter() {
+						@Override
+						public boolean accept(File pathname) {						
+							return ((pathname.isDirectory()) || (pathname.getName().contains(".")?extensions.contains(pathname.getName().substring(pathname.getName().lastIndexOf("."))):false));
+						}
+					};
+				}
 			}
+			
+			String DefaultDir = extras.getString("DefaultDir");
+			if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
+			currentDir = new File(DefaultDir);
+			Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
+			fill(currentDir);
 		}
-		
-		currentDir = new File("/sdcard/");
-		fill(currentDir);		
+		catch(Exception ex)
+		{
+			Toast.makeText(this, "Error " + ex.getMessage(), Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
