@@ -34,8 +34,10 @@ public class FileChooser extends ListActivity {
 					extensions = extras.getStringArrayList("filterFileExtension");				
 					fileFilter = new FileFilter() {
 						@Override
-						public boolean accept(File pathname) {						
-							return ((pathname.isDirectory()) || (pathname.getName().contains(".")?extensions.contains(pathname.getName().substring(pathname.getName().lastIndexOf("."))):false));
+						public boolean accept(File pathname) 
+						{						
+							return ((pathname.isDirectory()) 
+									|| ExtensionsMatch(pathname));
 						}
 					};
 				}
@@ -51,6 +53,35 @@ public class FileChooser extends ListActivity {
 		{
 			Toast.makeText(this, "Error " + ex.getMessage(), Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	private boolean ExtensionsMatch(File pathname)
+	{
+		String ext;
+		if(pathname.getName().contains("."))
+		{
+			ext = pathname.getName().substring(pathname.getName().lastIndexOf("."));
+		}
+		else
+		{
+			return false;
+		}
+		
+		if (extensions.contains(ext)) return true;
+		
+		for(String itext: extensions)
+		{
+			itext = itext.replace(".", "\\.");
+			itext = itext.toLowerCase();
+			ext = ext.toLowerCase();
+			if (ext.matches(itext.replace("?", ".?").replace("*", ".*")))
+					{
+						return true;
+					}
+		}
+		
+		return false;
+		
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

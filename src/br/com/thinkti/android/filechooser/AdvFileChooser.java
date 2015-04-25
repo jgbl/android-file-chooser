@@ -40,8 +40,9 @@ public class AdvFileChooser extends Activity {
 				fileFilter = new FileFilter() {
 					@Override
 					public boolean accept(File pathname) {						
-						return ((pathname.isDirectory()) || (pathname.getName().contains(".")?extensions.contains(pathname.getName().substring(pathname.getName().lastIndexOf("."))):false));
-					}
+						return ((pathname.isDirectory()) 
+								|| ExtensionsMatch(pathname));
+						}
 				};
 			}
 			if (extras.getBoolean("selectFolder")) {				
@@ -60,6 +61,35 @@ public class AdvFileChooser extends Activity {
 		currentDir = new File(DefaultDir);
 		Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
 		fill(currentDir);		
+	}
+	
+	private boolean ExtensionsMatch(File pathname)
+	{
+		String ext;
+		if(pathname.getName().contains("."))
+		{
+			ext = pathname.getName().substring(pathname.getName().lastIndexOf("."));
+		}
+		else
+		{
+			return false;
+		}
+		
+		if (extensions.contains(ext)) return true;
+		
+		for(String itext: extensions)
+		{
+			itext = itext.replace(".", "\\.");
+			itext = itext.toLowerCase();
+			ext = ext.toLowerCase();
+			if (ext.matches(itext.replace("?", ".?").replace("*", ".*")))
+					{
+						return true;
+					}
+		}
+		
+		return false;
+		
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
