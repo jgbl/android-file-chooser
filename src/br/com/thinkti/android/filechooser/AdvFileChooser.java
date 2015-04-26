@@ -82,7 +82,7 @@ public class AdvFileChooser extends Activity {
 			itext = itext.replace(".", "\\.");
 			itext = itext.toLowerCase();
 			ext = ext.toLowerCase();
-			if (ext.matches(itext.replace("?", ".?").replace("*", ".*")))
+			if (ext.matches(itext.replace("?", ".{1}").replace("*", ".*")))
 					{
 						return true;
 					}
