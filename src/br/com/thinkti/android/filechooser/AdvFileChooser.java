@@ -26,6 +26,8 @@ public class AdvFileChooser extends Activity {
 	private File fileSelected;
 	private ArrayList<String> extensions;
 	private boolean selectFolder = false;
+	private boolean unicode;
+	private String DefaultDir;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class AdvFileChooser extends Activity {
 		
         Bundle extras = getIntent().getExtras();
 		if (extras != null) {
+			unicode = extras.getBoolean("blnUniCode", true);
+			DefaultDir = extras.getString("DefaultDir");
 			if (extras.getStringArrayList("filterFileExtension") != null) {
 				extensions = extras.getStringArrayList("filterFileExtension");				
 				fileFilter = new FileFilter() {
@@ -56,7 +60,6 @@ public class AdvFileChooser extends Activity {
 			}
 		}
 		
-		String DefaultDir = extras.getString("DefaultDir");
 		if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
 		currentDir = new File(DefaultDir);
 		Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
@@ -178,6 +181,7 @@ public class AdvFileChooser extends Activity {
 				        	   	fileSelected = new File(o.getPath());
 								Intent intent = new Intent();
 								intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
+								intent.putExtra("blnUniCode", AdvFileChooser.this.unicode);
 								setResult(Activity.RESULT_OK, intent);
 								finish();
 				           }
@@ -190,6 +194,7 @@ public class AdvFileChooser extends Activity {
 			fileSelected = new File(o.getPath());
 			Intent intent = new Intent();
 			intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
+			intent.putExtra("blnUniCode", this.unicode);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}

@@ -21,6 +21,8 @@ public class FileChooser extends ListActivity {
 	private FileArrayAdapter adapter;
 	private FileFilter fileFilter;
 	private File fileSelected;
+	private boolean unicode;
+	private String DefaultDir;
 	private ArrayList<String> extensions;
 	
 	@Override
@@ -29,7 +31,10 @@ public class FileChooser extends ListActivity {
 		try
 		{
 			Bundle extras = getIntent().getExtras();
-			if (extras != null) {
+			if (extras != null) 
+			{
+				unicode = extras.getBoolean("blnUniCode", true);
+				DefaultDir = extras.getString("DefaultDir");
 				if (extras.getStringArrayList("filterFileExtension") != null) {
 					extensions = extras.getStringArrayList("filterFileExtension");				
 					fileFilter = new FileFilter() {
@@ -43,7 +48,7 @@ public class FileChooser extends ListActivity {
 				}
 			}
 			
-			String DefaultDir = extras.getString("DefaultDir");
+			
 			if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
 			currentDir = new File(DefaultDir);
 			Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
@@ -145,6 +150,7 @@ public class FileChooser extends ListActivity {
 			fileSelected = new File(o.getPath());
 			Intent intent = new Intent();
 			intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
+			intent.putExtra("blnUniCode", this.unicode);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
 		}		
