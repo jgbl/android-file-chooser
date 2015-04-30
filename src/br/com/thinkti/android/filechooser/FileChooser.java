@@ -92,8 +92,9 @@ public class FileChooser extends ListActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	if ((!currentDir.getName().equals("sdcard")) && (currentDir.getParentFile() != null)) {
-	        	currentDir = currentDir.getParentFile();
-	        	fill(currentDir);
+	        	finish();
+        		//currentDir = currentDir.getParentFile();
+	        	//fill(currentDir);
         	} else {
         		finish();
         	}
