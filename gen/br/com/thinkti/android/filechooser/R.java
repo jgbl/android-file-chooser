@@ -1824,10 +1824,13 @@ containing a value of this type.
         public static int currentDir=0x7f0a0011;
         public static int fileSize=0x7f0a0012;
         public static int folder=0x7f0a0013;
+        public static int no=0x7f0a0019;
         public static int openFolder=0x7f0a0015;
         public static int optionSelection=0x7f0a0017;
         public static int parentDirectory=0x7f0a0014;
+        public static int quit=0x7f0a001a;
         public static int selectThis=0x7f0a0016;
+        public static int yes=0x7f0a0018;
     }
     public static final class style {
         public static int Base_TextAppearance_AppCompat=0x7f0b0098;

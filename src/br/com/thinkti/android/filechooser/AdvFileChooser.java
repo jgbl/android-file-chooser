@@ -98,9 +98,29 @@ public class AdvFileChooser extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	if ((!currentDir.getName().equals("sdcard")) && (currentDir.getParentFile() != null)) {
-	        	finish();
-        		//currentDir = currentDir.getParentFile();
-	        	//fill(currentDir);
+        		AlertDialog.Builder A = new AlertDialog.Builder(this);
+				A.setPositiveButton(getString(R.string.yes),
+						new AlertDialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								AdvFileChooser.this.finish();
+							}
+						});
+				A.setNegativeButton(getString(R.string.no),
+						new AlertDialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) 
+							{
+								currentDir = currentDir.getParentFile();
+					        	fill(currentDir);
+							}
+						});
+				A.setMessage(getString(R.string.quit));
+				A.setTitle("Question");
+				A.show();
+
         	} else {
         		finish();
         	}

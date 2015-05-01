@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -92,9 +94,30 @@ public class FileChooser extends ListActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
         	if ((!currentDir.getName().equals("sdcard")) && (currentDir.getParentFile() != null)) {
-	        	finish();
-        		//currentDir = currentDir.getParentFile();
-	        	//fill(currentDir);
+        		AlertDialog.Builder A = new AlertDialog.Builder(this);
+				A.setPositiveButton(getString(R.string.yes),
+						new AlertDialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								FileChooser.this.finish();
+							}
+						});
+				A.setNegativeButton(getString(R.string.no),
+						new AlertDialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) 
+							{
+								currentDir = currentDir.getParentFile();
+					        	fill(currentDir);
+							}
+						});
+				A.setMessage(getString(R.string.quit));
+				A.setTitle("Question");
+				A.show();
+
+        		
         	} else {
         		finish();
         	}
