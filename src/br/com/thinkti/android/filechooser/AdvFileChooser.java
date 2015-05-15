@@ -27,6 +27,7 @@ public class AdvFileChooser extends Activity {
 	private ArrayList<String> extensions;
 	private boolean selectFolder = false;
 	private boolean unicode;
+	private boolean blnNew;
 	private String DefaultDir;
 	
 	@Override
@@ -39,6 +40,7 @@ public class AdvFileChooser extends Activity {
 		if (extras != null) {
 			unicode = extras.getBoolean("blnUniCode", true);
 			DefaultDir = extras.getString("DefaultDir");
+			blnNew = extras.getBoolean("blnNew",false);
 			if (extras.getStringArrayList("filterFileExtension") != null) {
 				extensions = extras.getStringArrayList("filterFileExtension");				
 				fileFilter = new FileFilter() {
@@ -104,6 +106,10 @@ public class AdvFileChooser extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
+								Intent intent = new Intent();
+								intent.putExtra("blnUniCode", AdvFileChooser.this.unicode);
+								intent.putExtra("blnNew", blnNew);
+								setResult(Activity.RESULT_CANCELED, intent);
 								AdvFileChooser.this.finish();
 							}
 						});
@@ -203,6 +209,7 @@ public class AdvFileChooser extends Activity {
 								Intent intent = new Intent();
 								intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
 								intent.putExtra("blnUniCode", AdvFileChooser.this.unicode);
+								intent.putExtra("blnNew", blnNew);
 								setResult(Activity.RESULT_OK, intent);
 								finish();
 				           }
