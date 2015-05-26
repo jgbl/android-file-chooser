@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/adMob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:orientation="vertical" >
+
+	</LinearLayout>    
+	<ListView 
+	    android:id="@+id/lvFiles"
+	    android:layout_width="fill_parent"
+    	android:layout_height="0dp"
+        android:layout_weight="1">	    
+	</ListView>
+	<LinearLayout 
+  			android:layout_height="wrap_content" 
+  			android:orientation="vertical" 
+  			android:layout_width="fill_parent"
+  			>	
+
+			<EditText
+			    android:id="@+id/edFile"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_marginLeft="5dip"
+			    android:layout_marginTop="5dip"
+			    android:contentDescription="@string/edFile"
+			    android:inputType="text"
+			    android:singleLine="true"
+			    android:text="@+id/edFile"
+			    android:textStyle="bold" >
+
+			</EditText>
+			<Button 
+				android:text="@+id/btnSelect" 
+				android:id="@+id/btnSelect" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+				android:layout_marginLeft="5dip">
+			</Button>
+		</LinearLayout>
+	
+</LinearLayout>

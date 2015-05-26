@@ -33,7 +33,7 @@ public class AdvFileChooser extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.list_view);
+		setContentView(R.layout.list_view_newfile);
 		
 		
         Bundle extras = getIntent().getExtras();

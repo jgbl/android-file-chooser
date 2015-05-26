@@ -32,24 +32,28 @@ public final class R {
         public static int TextView01=0x7f050001;
         public static int TextView02=0x7f050002;
         public static int adMob=0x7f050003;
+        public static int btnSelect=0x7f050006;
+        public static int edFile=0x7f050005;
         public static int img1=0x7f050000;
         public static int lvFiles=0x7f050004;
     }
     public static final class layout {
         public static int file_view=0x7f030000;
         public static int list_view=0x7f030001;
+        public static int list_view_newfile=0x7f030002;
     }
     public static final class string {
-        public static int app_name=0x7f040000;
-        public static int currentDir=0x7f040001;
-        public static int fileSize=0x7f040002;
-        public static int folder=0x7f040003;
-        public static int no=0x7f040009;
-        public static int openFolder=0x7f040005;
-        public static int optionSelection=0x7f040007;
-        public static int parentDirectory=0x7f040004;
-        public static int quit=0x7f04000a;
-        public static int selectThis=0x7f040006;
-        public static int yes=0x7f040008;
+        public static int app_name=0x7f040001;
+        public static int currentDir=0x7f040002;
+        public static int edFile=0x7f040000;
+        public static int fileSize=0x7f040003;
+        public static int folder=0x7f040004;
+        public static int no=0x7f04000a;
+        public static int openFolder=0x7f040006;
+        public static int optionSelection=0x7f040008;
+        public static int parentDirectory=0x7f040005;
+        public static int quit=0x7f04000b;
+        public static int selectThis=0x7f040007;
+        public static int yes=0x7f040009;
     }
 }
