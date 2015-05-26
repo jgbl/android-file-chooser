@@ -20,29 +20,37 @@
 	</ListView>
 	<LinearLayout 
   			android:layout_height="wrap_content" 
-  			android:orientation="vertical" 
+  			android:orientation="horizontal" 
   			android:layout_width="fill_parent"
-  			>	
+  			>
+  			
+	    	<Button
+	    	    android:id="@+id/btnCreateFolder"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content"
+	    	    android:background="@drawable/folder" >
+
+			</Button>
+	    	
 
 			<EditText
 			    android:id="@+id/edFile"
-			    android:layout_width="wrap_content"
+			    android:layout_width="0dp"
 			    android:layout_height="wrap_content"
-			    android:layout_marginLeft="5dip"
-			    android:layout_marginTop="5dip"
+			    android:layout_weight="1"
 			    android:contentDescription="@string/edFile"
 			    android:inputType="text"
 			    android:singleLine="true"
-			    android:text="@+id/edFile"
 			    android:textStyle="bold" >
 
 			</EditText>
-			<Button 
-				android:text="@+id/btnSelect" 
-				android:id="@+id/btnSelect" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content" 
-				android:layout_marginLeft="5dip">
+
+			<Button
+			    android:id="@+id/btnSelect"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="@string/btnSave" >
+
 			</Button>
 		</LinearLayout>
 	

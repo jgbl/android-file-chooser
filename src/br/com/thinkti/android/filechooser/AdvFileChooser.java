@@ -5,6 +5,9 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,8 +16,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -60,12 +68,120 @@ public class AdvFileChooser extends Activity {
 					}
 				};									
 			}
+			//fileSelected = new File(o.getPath());
+			final EditText edFile = (EditText)findViewById(R.id.edFile);
+			edFile.setText("");
+			final Button btnSel = (Button)findViewById(R.id.btnSelect);
+			btnSel.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					if (edFile.getText()!=null && edFile.getText().length()>0)
+					{
+						fileSelected = new File(currentDir,edFile.getText().toString());
+						Intent intent = new Intent();
+						intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
+						intent.putExtra("blnUniCode", AdvFileChooser.this.unicode);
+						AdvFileChooser.this.setResult(Activity.RESULT_OK, intent);
+						AdvFileChooser.this.finish();
+					}
+				}
+			});
+			
+			final Button btnCreateFolder = (Button)findViewById(R.id.btnCreateFolder);
+			btnCreateFolder.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) 
+				{
+					CreateFolder(edFile.getText().toString());
+				}
+			});
+			/*
+			Intent intent = new Intent();
+			intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
+			intent.putExtra("blnUniCode", this.unicode);
+			setResult(Activity.RESULT_OK, intent);
+			finish();
+			*/
 		}
 		
 		if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
 		currentDir = new File(DefaultDir);
 		Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
 		fill(currentDir);		
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		try {
+			getMenuInflater().inflate(R.menu.menu, menu);
+			//findViewById(R.menu.main).setBackgroundColor(Color.BLACK);
+			//.setBackgroundColor(Color.BLACK);
+			//resize();
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.mnuCreateFolder)
+		{
+			CreateFolder("");
+		}
+		return super.onOptionsItemSelected(item);
+	
+	}
+	
+	private void CreateFolder(String name)
+	{
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle(getString(R.string.mnuCreateFolder));
+		alert.setMessage(getString(R.string.mnuCreateFolder)
+				);
+
+		// Set an EditText view to get user input
+		final EditText input = new EditText(this);
+		input.setLines(1);
+		input.setSingleLine();
+		alert.setView(input);
+		input.setText(name);
+		alert.setPositiveButton(getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int whichButton) {
+						String value = input.getText().toString();
+						value = value.replace("\n", "");
+						try {
+							File F = new File(currentDir, value);
+							if (!F.exists())
+							{
+								F.mkdirs();
+								fill(currentDir);
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+
+		alert.setNegativeButton(getString(R.string.cancel),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,
+							int whichButton) 
+					{
+						
+					}
+				});
+
+		alert.show();
+
 	}
 	
 	private boolean ExtensionsMatch(File pathname)
@@ -85,8 +201,8 @@ public class AdvFileChooser extends Activity {
 		for(String itext: extensions)
 		{
 			itext = itext.replace(".", "\\.");
-			itext = itext.toLowerCase();
-			ext = ext.toLowerCase();
+			itext = itext.toLowerCase(Locale.getDefault());
+			ext = ext.toLowerCase(Locale.getDefault());
 			if (ext.matches(itext.replace("?", ".{1}").replace("*", ".*")))
 					{
 						return true;
@@ -220,11 +336,15 @@ public class AdvFileChooser extends Activity {
 		} else {
 			//onFileClick(o);
 			fileSelected = new File(o.getPath());
+			EditText edFile = (EditText)findViewById(R.id.edFile);
+			edFile.setText(fileSelected.getName());
+			/*
 			Intent intent = new Intent();
 			intent.putExtra("fileSelected", fileSelected.getAbsolutePath());
 			intent.putExtra("blnUniCode", this.unicode);
 			setResult(Activity.RESULT_OK, intent);
 			finish();
+			*/
 		}
 	}
 	
