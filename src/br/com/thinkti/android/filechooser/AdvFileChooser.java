@@ -7,16 +7,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,7 +113,7 @@ public class AdvFileChooser extends Activity {
 		{
 			try {
 				fileSelected = new File(getRealPathFromURI(uri));
-				EditText edFile = (EditText)findViewById(R.id.edFile);
+				final EditText edFile = (EditText)findViewById(R.id.edFile);
 				edFile.setText(fileSelected.getName());
 				if (fileSelected.exists())
 				{
@@ -129,6 +130,27 @@ public class AdvFileChooser extends Activity {
 				}
 				else
 				{
+					String FName = "";
+					String path = dumpUriMetaData(uri);
+					if (path!=null && path.length()>0)
+					{
+						if(path.contains(":")) path = path.split(":")[0];
+						int li=path.lastIndexOf("/");
+						if (li>-1)
+						{
+							FName = path.substring(path.lastIndexOf("/"));
+						}
+						else
+						{
+							FName = path;
+						}
+					}
+					else
+					{
+						FName = extras.getString("URIName");
+						if (FName!=null && FName.length()>1 && FName.startsWith("/")) FName = FName.substring(1);
+					}
+					edFile.setText(FName);
 					fileSelected = null;
 					uri = null;
 				}
@@ -173,6 +195,76 @@ public class AdvFileChooser extends Activity {
 			}
 		}
 	}
+	
+	public String dumpUriMetaData(Uri uri) {
+
+	    // The query, since it only applies to a single document, will only return
+	    // one row. There's no need to filter, sort, or select fields, since we want
+	    // all fields for one document.
+	    Cursor cursor;
+	    String mimeType = null;
+	    try
+	    {
+	    	cursor = getContentResolver().query(uri, null, null, null, null);
+	    	mimeType = getContentResolver().getType(uri);
+	    }
+	    catch(Exception ex)
+	    {
+	    	Log.e("DumpUri","getContentResolver().query "+ uri.toString(),ex);
+	    	cursor = null;
+	    }
+	    try {
+	    // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
+	    // "if there's anything to look at, look at it" conditionals.
+	        if (cursor != null && cursor.moveToFirst()) {
+
+	            // Note it's called "Display Name".  This is
+	            // provider-specific, and might not necessarily be the file name.
+	            String displayName = cursor.getString(
+	                    cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+	            String path = uri.getPath();
+	            path = path.substring(path.lastIndexOf("/")+1);
+	            int found = path.indexOf(displayName);
+	            if (found>-1 && (found+displayName.length()<path.length()))
+	            {
+	            	displayName+=path.substring(found+displayName.length());
+	            }
+	            		
+	            int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+	            // If the size is unknown, the value stored is null.  But since an
+	            // int can't be null in Java, the behavior is implementation-specific,
+	            // which is just a fancy term for "unpredictable".  So as
+	            // a rule, check if it's null before assigning to an int.  This will
+	            // happen often:  The storage API allows for remote files, whose
+	            // size might not be locally known.
+	            String size = null;
+	            if (!cursor.isNull(sizeIndex)) {
+	                // Technically the column stores an int, but cursor.getString()
+	                // will do the conversion automatically.
+	                size = cursor.getString(sizeIndex);
+	            } else {
+	                size = "Unknown";
+	            }
+	            
+	            
+	            return displayName + ":" + size + ":" + mimeType;
+	        }
+	        else
+	        {
+	        	return "";
+	        }
+	    }
+	    catch(Exception ex)
+	    {
+	    	ex.printStackTrace();
+	    } 
+	    finally 
+	    {
+	        if (cursor != null) cursor.close();
+	    }
+	    return "";
+	}
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
