@@ -13,8 +13,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -105,11 +107,70 @@ public class AdvFileChooser extends Activity {
 			finish();
 			*/
 		}
+		Uri uri = getIntent().getData();
+		if (uri!=null)
+		{
+			try {
+				fileSelected = new File(getRealPathFromURI(uri));
+				if (fileSelected.exists())
+				{
+					currentDir = fileSelected.getParentFile();
+					if (currentDir.list()!=null && currentDir.list().length>0)
+					{
+						EditText edFile = (EditText)findViewById(R.id.edFile);
+						edFile.setText(fileSelected.getName());
+					}
+					else
+					{
+						uri = null;
+						currentDir = null;
+					}
+				}
+				else
+				{
+					fileSelected = null;
+					uri = null;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				fileSelected = null;
+				uri = null;
+			}
+		}
+		if (uri==null)
+		{
+			if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
+			currentDir = new File(DefaultDir);
+		}
 		
-		if (DefaultDir == null || DefaultDir.length()==0) DefaultDir=Environment.getExternalStorageDirectory().getPath();
-		currentDir = new File(DefaultDir);
 		Toast.makeText(this, "Loading " + currentDir.getPath(), Toast.LENGTH_LONG).show();
 		fill(currentDir);		
+	}
+	
+	public String getRealPathFromURI(android.net.Uri contentURI) throws Exception 
+	{
+		android.database.Cursor cursor = null;
+		try {
+			String[] proj = { MediaStore.Images.Media.DATA };
+			cursor = getContentResolver().query(contentURI, proj, null,
+					null, null);
+			if (cursor!=null)
+			{
+				int column_index = cursor
+						.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+				cursor.moveToFirst();
+				return cursor.getString(column_index);
+			}
+			else
+			{
+				return contentURI.getPath();
+			}
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
 	}
 	
 	@Override
